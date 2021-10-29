@@ -1,0 +1,344 @@
+import pymysql
+from PyQt5.QtWidgets import *
+import sys, datetime
+
+class DB_Utils:
+
+    def queryExecutor(self, db, sql, params):
+        conn = pymysql.connect(host='localhost', user='guest', password='bemyguest', db=db, charset='utf8')
+
+        try:
+            with conn.cursor(pymysql.cursors.DictCursor) as cursor:     # dictionary based cursor
+                cursor.execute(sql, params)
+                tuples = cursor.fetchall()
+                return tuples
+        except Exception as e:
+            print(e)
+            print(type(e))
+        finally:
+            conn.close()
+
+    def updateExecutor(self, db, sql, params):
+        conn = pymysql.connect(host='localhost', user='guest', password='bemyguest', db=db, charset='utf8')
+
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(sql, params)
+            conn.commit()
+        except Exception as e:
+            print(e)
+            print(type(e))
+        finally:
+            conn.close()
+
+class DB_Queries:
+    # 모든 검색문은 여기에 각각 하나의 메소드로 정의
+
+    def selectTeam(self):
+        sql = "SELECT DISTINCT team_name FROM TEAM"
+        params = ()
+        util = DB_Utils()
+        tuples = util.queryExecutor(db="kleague", sql=sql, params=params)
+        return tuples
+
+
+    def selectPlayerPosition(self):
+        sql = "SELECT DISTINCT position FROM player"
+        params = ()
+        util = DB_Utils()
+        tuples = util.queryExecutor(db="kleague", sql=sql, params=params)
+        return tuples
+
+    def selectPlayerNation(self):
+        sql = "SELECT DISTINCT nation FROM player"
+        params = ()
+        util = DB_Utils()
+        tuples = util.queryExecutor(db='kleague', sql=sql, params=params)
+        return tuples
+
+    # def selectPlayerUsingPosition(self, value):
+    #     if value == '없음':
+    #         sql = "SELECT * FROM player WHERE position IS NULL"
+    #         params = ()
+    #     else:
+    #         sql = "SELECT * FROM player WHERE position = %s"
+    #         params = (value)         # SQL문의 실제 파라미터 값의 튜플
+    #
+    #     util = DB_Utils()
+    #     tuples = util.queryExecutor(db="kleague", sql=sql, params=params)
+    #     return tuples
+
+    def selectPlayer(self, tValue, pValue, nValue):
+        if tValue == "ALL" and pValue == "ALL" and nValue == "ALL":
+            sql = "SELECT * FROM player"
+            params = ()
+
+        elif tValue == "ALL" and nValue == "ALL":
+            sql = "SELECT * FROM player WHERE position = %s"
+            params = (pValue)
+
+        elif pValue == "ALL" and nValue == "ALL":
+            sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s"
+            params = (tValue)
+
+        elif tValue == "ALL" and pValue == "ALL":
+            if nValue == "대한민국":
+                sql = "SELECT * FROM player WHERE nation IS NULL"
+                params = ()
+            else:
+                sql = "SELECT * FROM player WHERE nation = %s"
+                params = (nValue)
+
+        elif tValue == "ALL" and pValue == "미정" and nValue == "ALL":
+            sql = "SELECT * FROM player WHERE position IS NULL"
+            params = ()
+
+        elif tValue == "ALL" and pValue == "미정":
+            if nValue == "대한민국":
+                sql = "SELECT * FROM player WHERE position IS NULL AND nation IS NULL"
+                params = ()
+            else:
+                sql = "SELECT * FROM player WHERE position IS NULL AND nation = %s"
+                params = (nValue)
+
+        elif pValue == "미정" and nValue == "ALL":
+            sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL"
+            params = (tValue)
+
+        elif pValue == "미정":
+            if nValue == "대한민국":
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation IS NULL"
+                params = (tValue)
+            else:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation = %s"
+                params = (tValue, nValue)
+
+        elif tValue == "ALL":
+            if nValue == "대한민국":
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation IS NULL"
+                params = (pValue)
+            else:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation = %s"
+                params = (pValue, nValue)
+
+        elif pValue == "ALL":
+            if nValue == "대한민국":
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation IS NULL"
+                params = (tValue)
+            else:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation = %s"
+                params = (tValue, nValue)
+
+        elif nValue == "ALL":
+            sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s"
+            params = (tValue, pValue)
+
+        else:
+            if nValue == "대한민국":
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation IS NULL"
+                params = (tValue, pValue)
+            else:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation = %s"
+                params = (tValue, pValue, nValue)
+
+        util = DB_Utils()
+        tuples = util.queryExecutor(db="kleague", sql=sql, params=params)
+        return tuples
+
+class DB_Updates:
+    # 모든 갱신문은 여기에 각각 하나의 메소드로 정의
+
+    def insertPlayer(self, player_id, player_name, team_id, position):
+        sql = "INSERT INTO player (player_id, player_name, team_id, position) VALUES (%s, %s, %s, %s)"
+        params = (player_id, player_name, team_id, position)
+
+        util = DB_Utils()
+        util.updateExecutor(db="kleague", sql=sql, params=params)
+
+#########################################
+
+class MainWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setupUI()
+
+    def setupUI(self):
+
+        # 윈도우 설정
+        self.setWindowTitle("Report K-league Search")
+        self.setGeometry(0, 0, 1100, 620)
+
+        # 라벨 설정
+        self.labelTitle = QLabel("선수 검색", self)
+        self.labelTeam = QLabel("팀명: ", self)
+        self.labelPosition = QLabel("포지션: ", self)
+        self.labelNation = QLabel("출신국: ", self)
+        self.labelHeight = QLabel("키: ", self)
+        self.labelWeight = QLabel("몸무게: ", self)
+        self.labelFile = QLabel("파일 출력", self)
+
+        # 콤보박스 설정
+        self.comboBoxTeam = QComboBox(self)
+        self.comboBoxPosition = QComboBox(self)
+        self.comboBoxNation = QComboBox(self)
+
+        # 라인에디트 설정
+        self.lineEditHeight = QLineEdit(self)
+        self.lineEditWeight = QLineEdit(self)
+
+        # 라디오버튼 설정
+        self.radioButtonHeightAbove = QRadioButton("이상")
+        self.radioButtonHeightBelow = QRadioButton("이하")
+        self.groupBoxHeight = QGroupBox()
+        self.radioButtonWeightAbove = QRadioButton("이상")
+        self.radioButtonWeightBelow = QRadioButton("이하")
+        self.groupBoxWeight = QGroupBox()
+        self.radioButtonxCsv = QRadioButton("CSV")
+        self.radioButtonJson = QRadioButton("JSON")
+        self.radioButtonXml = QRadioButton("XML")
+        self.groupBoxFile = QGroupBox()
+
+        # DB 검색문 실행
+        query = DB_Queries()
+        teamRows = query.selectTeam()
+        postionRows = query.selectPlayerPosition()
+        nationRows = query.selectPlayerNation()
+
+        teamColumnName = list(teamRows[0].keys())[0]
+        teamItems = [row[teamColumnName] for row in teamRows]
+        teamItems.append("ALL")
+        self.comboBoxTeam.addItems(teamItems)
+        self.comboBoxTeam.setCurrentIndex(15)
+
+        positionColumnName = list(postionRows[0].keys())[0]
+        positionItems = ['미정' if row[positionColumnName] == None else row[positionColumnName] for row in postionRows]
+        positionItems.append("ALL")
+        self.comboBoxPosition.addItems(positionItems)
+        self.comboBoxPosition.setCurrentIndex(5)
+
+        nationColumnName = list(nationRows[0].keys())[0]
+        nationItems = ['대한민국' if row[nationColumnName] == None else row[nationColumnName] for row in nationRows]
+        nationItems.append("ALL")
+        self.comboBoxNation.addItems(nationItems)
+        self.comboBoxNation.setCurrentIndex(13)
+
+
+        # 푸쉬버튼 설정
+        self.resetButton = QPushButton("초기화", self)
+        self.saveButton = QPushButton("저장", self)
+        self.pushButton = QPushButton("검색", self)
+        self.pushButton.clicked.connect(self.pushButton_Clicked)
+
+
+        # 테이블위젯 설정
+        self.tableWidget = QTableWidget(self)   # QTableWidget 객체 생성
+        middleLayout = QGridLayout()
+        middleLayout.addWidget(self.tableWidget)
+
+        # 레이아웃 설정
+        self.heightLayout = QBoxLayout(QBoxLayout.LeftToRight)
+        self.weightLayout = QBoxLayout(QBoxLayout.LeftToRight)
+        self.groupBoxHeight.setLayout(self.heightLayout)
+        self.groupBoxWeight.setLayout(self.weightLayout)
+        self.heightLayout.addWidget(self.radioButtonHeightAbove)
+        self.heightLayout.addWidget(self.radioButtonHeightBelow)
+        self.weightLayout.addWidget(self.radioButtonWeightAbove)
+        self.weightLayout.addWidget(self.radioButtonWeightBelow)
+
+        toplayout = QGridLayout()
+        toplayout.addWidget(self.labelTitle, 0, 0)
+        toplayout.addWidget(self.labelTeam, 1, 0)
+        toplayout.addWidget(self.comboBoxTeam, 1, 1)
+        toplayout.addWidget(self.labelPosition, 1, 5)
+        toplayout.addWidget(self.comboBoxPosition, 1, 6)
+        toplayout.addWidget(self.labelNation, 1, 9)
+        toplayout.addWidget(self.comboBoxNation, 1, 10)
+        toplayout.addWidget(self.resetButton, 1, 11)
+        toplayout.addWidget(self.labelHeight, 2, 0)
+        toplayout.addWidget(self.lineEditHeight, 2, 1)
+        toplayout.addWidget(self.groupBoxHeight)
+        toplayout.addWidget(self.labelWeight, 2, 5)
+        toplayout.addWidget(self.lineEditWeight, 2, 6)
+        toplayout.addWidget(self.groupBoxWeight)
+        toplayout.addWidget(self.pushButton, 2, 11)
+
+        bottomInnerLayout = QBoxLayout(QBoxLayout.LeftToRight)
+        bottomInnerLayout.addWidget(self.radioButtonxCsv)
+        bottomInnerLayout.addWidget(self.radioButtonJson)
+        bottomInnerLayout.addWidget(self.radioButtonXml)
+        self.groupBoxFile.setLayout(bottomInnerLayout)
+
+        bottomLayout = QGridLayout()
+        bottomLayout.addWidget(self.labelFile, 0, 0)
+        bottomLayout.addWidget(self.groupBoxFile, 1, 0)
+        bottomLayout.addWidget(self.saveButton, 1, 11)
+
+
+
+
+        layout = QVBoxLayout()
+        layout.addLayout(toplayout)
+        layout.addLayout(middleLayout)
+        layout.addLayout(bottomLayout)
+        self.setLayout(layout)
+
+
+    def comboBoxTeam_Activated(self):
+
+        self.teamValue = self.comboBoxTeam.currentText()
+
+    def comboBoxPosition_Activated(self):
+
+        self.positionValue = self.comboBoxPosition.currentText()  # positionValue를 통해 선택한 포지션 값을 전달
+
+    def comboBoxNation_Activated(self):
+
+        self.nationValue = self.comboBoxNation.currentText()
+
+    def pushButton_Clicked(self):
+
+        self.comboBoxTeam_Activated()
+        self.comboBoxPosition_Activated()
+        self.comboBoxNation_Activated()
+        # DB 검색문 실행
+        query = DB_Queries()
+        players = query.selectPlayer(self.teamValue, self.positionValue, self.nationValue)
+        if players :
+            self.tableWidget.clearContents() #테이블을 지움
+            self.tableWidget.setRowCount(len(players))
+            self.tableWidget.setColumnCount(len(players[0]))
+            columnNames = list(players[0].keys())
+            self.tableWidget.setHorizontalHeaderLabels(columnNames)
+            self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+
+            for player in players:                              # player는 딕셔너리임.
+                rowIDX = players.index(player)                  # 테이블 위젯의 row index 할당
+
+                for k, v in player.items():
+                    columnIDX = list(player.keys()).index(k)    # 테이블 위젯의 column index 할당
+
+                    if k == "NATION" and v == None:
+                        item = QTableWidgetItem("대한민국")
+                    elif k == "POSITION" and v == None:
+                        item = QTableWidgetItem("미정")
+                    elif v == None:
+                        continue
+                    elif isinstance(v, datetime.date):          # QTableWidgetItem 객체 생성
+                        item = QTableWidgetItem(v.strftime('%Y-%m-%d'))
+                    else:
+                        item = QTableWidgetItem(str(v))
+
+                    self.tableWidget.setItem(rowIDX, columnIDX, item)
+
+            self.tableWidget.resizeColumnsToContents()
+            self.tableWidget.resizeRowsToContents()
+
+#########################################
+
+def main():
+    app = QApplication(sys.argv)
+    mainWindow = MainWindow()
+    mainWindow.show()
+    sys.exit(app.exec_())
+
+main()
