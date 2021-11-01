@@ -143,77 +143,504 @@ class DB_Queries:
                     sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation = %s"
                     params = (tValue, pValue, nValue)
         else:
-            if tValue == "ALL" and pValue == "ALL" and nValue == "ALL":
-                sql = "SELECT * FROM player WHERE height %s %s AND weight %s %s"
-                params = (heightCheck, height, weightCheck, weight)
+            if tValue == "ALL" and pValue == "ALL" and nValue == "ALL" and heightCheck == True and weightCheck == True:
+                sql = "SELECT * FROM player WHERE height >= %s AND weight >= %s"
+                params = (height, weight)
+            elif tValue == "ALL" and pValue == "ALL" and nValue == "ALL" and heightCheck == False and weightCheck == False:
+                sql = "SELECT * FROM player WHERE height <= %s AND weight <= %s"
+                params = (height, weight)
+            elif tValue == "ALL" and pValue == "ALL" and nValue == "ALL" and heightCheck == True and weightCheck == False:
+                sql = "SELECT * FROM player WHERE height >= %s AND weight <= %s"
+                params = (height, weight)
+            elif tValue == "ALL" and pValue == "ALL" and nValue == "ALL" and heightCheck == False and weightCheck == True:
+                sql = "SELECT * FROM player WHERE height <= %s AND weight >= %s"
+                params = (height, weight)
+            elif tValue == "ALL" and pValue == "ALL" and nValue == "ALL" and heightCheck == True:
+                sql = "SELECT * FROM player WHERE height >= %s"
+                params = (height)
+            elif tValue == "ALL" and pValue == "ALL" and nValue == "ALL" and heightCheck == False:
+                sql = "SELECT * FROM player WHERE height <= %s"
+                params = (height)
+            elif tValue == "ALL" and pValue == "ALL" and nValue == "ALL" and weightCheck == True:
+                sql = "SELECT * FROM player WHERE weight >= %s"
+                params = (weight)
+            elif tValue == "ALL" and pValue == "ALL" and nValue == "ALL" and weightCheck == False:
+                sql = "SELECT * FROM player WHERE weight <= %s"
+                params = (weight)
 
-            elif tValue == "ALL" and nValue == "ALL":
-                sql = "SELECT * FROM player WHERE position = %s"
-                params = (pValue)
+            elif tValue == "ALL" and nValue == "ALL" and heightCheck == True and weightCheck == True:
+                sql = "SELECT * FROM player WHERE position = %s AND height >= %s AND weight >= %s"
+                params = (pValue, height, weight)
+            elif tValue == "ALL" and nValue == "ALL" and heightCheck == False and weightCheck == False:
+                sql = "SELECT * FROM player WHERE position = %s AND height <= %s AND weight <= %s"
+                params = (pValue, height, weight)
+            elif tValue == "ALL" and nValue == "ALL" and heightCheck == True and weightCheck == False:
+                sql = "SELECT * FROM player WHERE position = %s AND height >= %s AND weight <= %s"
+                params = (pValue, height, weight)
+            elif tValue == "ALL" and nValue == "ALL" and heightCheck == False and weightCheck == True:
+                sql = "SELECT * FROM player WHERE position = %s AND height <= %s AND weight >= %s"
+                params = (pValue, height, weight)
+            elif tValue == "ALL" and nValue == "ALL" and heightCheck == True:
+                sql = "SELECT * FROM player WHERE position = %s AND height >= %s"
+                params = (pValue, height)
+            elif tValue == "ALL" and nValue == "ALL" and heightCheck == False:
+                sql = "SELECT * FROM player WHERE position = %s AND height <= %s"
+                params = (pValue, height)
+            elif tValue == "ALL" and nValue == "ALL" and weightCheck == True:
+                sql = "SELECT * FROM player WHERE position = %s AND weight >= %s"
+                params = (pValue, weight)
+            elif tValue == "ALL" and nValue == "ALL" and weightCheck == False:
+                sql = "SELECT * FROM player WHERE position = %s AND weight <= %s"
+                params = (pValue, weight)
 
-            elif pValue == "ALL" and nValue == "ALL":
-                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s"
-                params = (tValue)
+            elif pValue == "ALL" and nValue == "ALL" and heightCheck == True and weightCheck == True:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND height >= %s AND weight >= %s"
+                params = (tValue, height, weight)
+            elif pValue == "ALL" and nValue == "ALL" and heightCheck == False and weightCheck == False:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND height <= %s AND weight <= %s"
+                params = (tValue, height, weight)
+            elif pValue == "ALL" and nValue == "ALL" and heightCheck == True and weightCheck == False:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND height >= %s AND weight <= %s"
+                params = (tValue, height, weight)
+            elif pValue == "ALL" and nValue == "ALL" and heightCheck == False and weightCheck == True:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND height <= %s AND weight >= %s"
+                params = (tValue, height, weight)
+            elif pValue == "ALL" and nValue == "ALL" and heightCheck == True:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND height >= %s"
+                params = (tValue, height)
+            elif pValue == "ALL" and nValue == "ALL" and heightCheck == False:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND height <= %s"
+                params = (tValue, height)
+            elif pValue == "ALL" and nValue == "ALL" and weightCheck == True:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND weight >= %s"
+                params = (tValue, weight)
+            elif pValue == "ALL" and nValue == "ALL" and weightCheck == False:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND weight <= %s"
+                params = (tValue, weight)
 
-            elif tValue == "ALL" and pValue == "ALL":
+            elif tValue == "ALL" and pValue == "ALL" and heightCheck == True and weightCheck == True:
                 if nValue == "대한민국":
-                    sql = "SELECT * FROM player WHERE nation IS NULL"
-                    params = ()
+                    sql = "SELECT * FROM player WHERE nation IS NULL AND height >= %s AND weight >= %s"
+                    params = (height, weight)
                 else:
-                    sql = "SELECT * FROM player WHERE nation = %s"
-                    params = (nValue)
-
-            elif tValue == "ALL" and pValue == "미정" and nValue == "ALL":
-                sql = "SELECT * FROM player WHERE position IS NULL"
-                params = ()
-
-            elif tValue == "ALL" and pValue == "미정":
+                    sql = "SELECT * FROM player WHERE nation = %s AND height >= %s AND weight >= %s"
+                    params = (nValue, height, weight)
+            elif tValue == "ALL" and pValue == "ALL" and heightCheck == False and weightCheck == False:
                 if nValue == "대한민국":
-                    sql = "SELECT * FROM player WHERE position IS NULL AND nation IS NULL"
-                    params = ()
+                    sql = "SELECT * FROM player WHERE nation IS NULL AND height <= %s AND weight <= %s"
+                    params = (height, weight)
                 else:
-                    sql = "SELECT * FROM player WHERE position IS NULL AND nation = %s"
-                    params = (nValue)
-
-            elif pValue == "미정" and nValue == "ALL":
-                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL"
-                params = (tValue)
-
-            elif pValue == "미정":
+                    sql = "SELECT * FROM player WHERE nation = %s AND height <= %s AND weight <= %s"
+                    params = (nValue, height, weight)
+            elif tValue == "ALL" and pValue == "ALL" and heightCheck == True and weightCheck == False:
                 if nValue == "대한민국":
-                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation IS NULL"
-                    params = (tValue)
+                    sql = "SELECT * FROM player WHERE nation IS NULL AND height >= %s AND weight <= %s"
+                    params = (height, weight)
                 else:
-                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation = %s"
-                    params = (tValue, nValue)
-
-            elif tValue == "ALL":
+                    sql = "SELECT * FROM player WHERE nation = %s AND height >= %s AND weight <= %s"
+                    params = (nValue, height, weight)
+            elif tValue == "ALL" and pValue == "ALL" and heightCheck == False and weightCheck == True:
                 if nValue == "대한민국":
-                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation IS NULL"
-                    params = (pValue)
+                    sql = "SELECT * FROM player WHERE nation IS NULL AND height <= %s AND weight >= %s"
+                    params = (height, weight)
                 else:
-                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation = %s"
-                    params = (pValue, nValue)
-
-            elif pValue == "ALL":
+                    sql = "SELECT * FROM player WHERE nation = %s AND height <= %s AND weight >= %s"
+                    params = (nValue, height, weight)
+            elif tValue == "ALL" and pValue == "ALL" and heightCheck == True:
                 if nValue == "대한민국":
-                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation IS NULL"
-                    params = (tValue)
+                    sql = "SELECT * FROM player WHERE nation IS NULL AND height >= %s"
+                    params = (height)
                 else:
-                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation = %s"
-                    params = (tValue, nValue)
-
-            elif nValue == "ALL":
-                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s"
-                params = (tValue, pValue)
-
-            else:
+                    sql = "SELECT * FROM player WHERE nation = %s AND height >= %s"
+                    params = (nValue, height)
+            elif tValue == "ALL" and pValue == "ALL" and heightCheck == False:
                 if nValue == "대한민국":
-                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation IS NULL"
-                    params = (tValue, pValue)
+                    sql = "SELECT * FROM player WHERE nation IS NULL AND height <= %s"
+                    params = (height)
                 else:
-                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation = %s"
-                    params = (tValue, pValue, nValue)
+                    sql = "SELECT * FROM player WHERE nation = %s AND height <= %s"
+                    params = (nValue, height)
+            elif tValue == "ALL" and pValue == "ALL" and weightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player WHERE nation IS NULL AND weight >= %s"
+                    params = (weight)
+                else:
+                    sql = "SELECT * FROM player WHERE nation = %s AND weight >= %s"
+                    params = (nValue, weight)
+            elif tValue == "ALL" and pValue == "ALL" and weightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player WHERE nation IS NULL AND weight <= %s"
+                    params = (weight)
+                else:
+                    sql = "SELECT * FROM player WHERE nation = %s AND weight <= %s"
+                    params = (nValue, weight)
+
+            elif tValue == "ALL" and pValue == "미정" and nValue == "ALL" and heightCheck == True and weightCheck == True:
+                sql = "SELECT * FROM player WHERE position IS NULL AND height >= %s AND weight >= %s"
+                params = (height, weight)
+            elif tValue == "ALL" and pValue == "미정" and nValue == "ALL" and heightCheck == False and weightCheck == False:
+                sql = "SELECT * FROM player WHERE position IS NULL AND height <= %s AND weight <= %s"
+                params = (height, weight)
+            elif tValue == "ALL" and pValue == "미정" and nValue == "ALL" and heightCheck == True and weightCheck == False:
+                sql = "SELECT * FROM player WHERE position IS NULL AND height >= %s AND weight <= %s"
+                params = (height, weight)
+            elif tValue == "ALL" and pValue == "미정" and nValue == "ALL" and heightCheck == False and weightCheck == True:
+                sql = "SELECT * FROM player WHERE position IS NULL AND height <= %s AND weight >= %s"
+                params = (height, weight)
+            elif tValue == "ALL" and pValue == "미정" and nValue == "ALL" and heightCheck == True:
+                sql = "SELECT * FROM player WHERE position IS NULL AND height >= %s"
+                params = (height)
+            elif tValue == "ALL" and pValue == "미정" and nValue == "ALL" and heightCheck == False:
+                sql = "SELECT * FROM player WHERE position IS NULL AND height <= %s"
+                params = (height)
+            elif tValue == "ALL" and pValue == "미정" and nValue == "ALL" and weightCheck == True:
+                sql = "SELECT * FROM player WHERE position IS NULL AND weight >= %s"
+                params = (weight)
+            elif tValue == "ALL" and pValue == "미정" and nValue == "ALL" and weightCheck == False:
+                sql = "SELECT * FROM player WHERE position IS NULL AND weight <= %s"
+                params = (weight)
+
+
+            elif tValue == "ALL" and pValue == "미정" and heightCheck == True and weightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player WHERE position IS NULL AND nation IS NULL AND height >= %s AND weight >= %s"
+                    params = (height, weight)
+                else:
+                    sql = "SELECT * FROM player WHERE position IS NULL AND nation = %s AND height >= %s AND weight >= %s"
+                    params = (nValue, height, weight)
+            elif tValue == "ALL" and pValue == "미정" and heightCheck == False and weightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player WHERE position IS NULL AND nation IS NULL AND height <= %s AND weight <= %s"
+                    params = (height, weight)
+                else:
+                    sql = "SELECT * FROM player WHERE position IS NULL AND nation = %s AND height <= %s AND weight <= %s"
+                    params = (nValue, height, weight)
+            elif tValue == "ALL" and pValue == "미정" and heightCheck == True and weightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player WHERE position IS NULL AND nation IS NULL AND height >= %s AND weight <= %s"
+                    params = (height, weight)
+                else:
+                    sql = "SELECT * FROM player WHERE position IS NULL AND nation = %s AND height >= %s AND weight <= %s"
+                    params = (nValue, height, weight)
+            elif tValue == "ALL" and pValue == "미정" and heightCheck == False and weightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player WHERE position IS NULL AND nation IS NULL AND height <= %s AND weight >= %s"
+                    params = (height, weight)
+                else:
+                    sql = "SELECT * FROM player WHERE position IS NULL AND nation = %s AND height <= %s AND weight >= %s"
+                    params = (nValue, height, weight)
+            elif tValue == "ALL" and pValue == "미정" and heightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player WHERE position IS NULL AND nation IS NULL AND height >= %s"
+                    params = (height)
+                else:
+                    sql = "SELECT * FROM player WHERE position IS NULL AND nation = %s AND height >= %s"
+                    params = (nValue, height)
+            elif tValue == "ALL" and pValue == "미정" and heightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player WHERE position IS NULL AND nation IS NULL AND height <= %s"
+                    params = (weight)
+                else:
+                    sql = "SELECT * FROM player WHERE position IS NULL AND nation = %s AND height <= %s"
+                    params = (nValue, weight)
+            elif tValue == "ALL" and pValue == "미정" and weightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player WHERE position IS NULL AND nation IS NULL AND weight >= %s"
+                    params = (weight)
+                else:
+                    sql = "SELECT * FROM player WHERE position IS NULL AND nation = %s AND weight >= %s"
+                    params = (nValue, weight)
+            elif tValue == "ALL" and pValue == "미정" and weightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player WHERE position IS NULL AND nation IS NULL AND weight <= %s"
+                    params = (weight)
+                else:
+                    sql = "SELECT * FROM player WHERE position IS NULL AND nation = %s AND weight <= %s"
+                    params = (nValue, weight)
+
+
+
+            elif pValue == "미정" and nValue == "ALL" and heightCheck == True and weightCheck == True:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND height >= %s AND weight >= %s"
+                params = (tValue, height, weight)
+            elif pValue == "미정" and nValue == "ALL" and heightCheck == False and weightCheck == False:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND height <= %s AND weight <= %s"
+                params = (tValue, height, weight)
+            elif pValue == "미정" and nValue == "ALL" and heightCheck == True and weightCheck == False:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND height >= %s AND weight <= %s"
+                params = (tValue, height, weight)
+            elif pValue == "미정" and nValue == "ALL" and heightCheck == False and weightCheck == True:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND height <= %s AND weight >= %s"
+                params = (tValue, height, weight)
+            elif pValue == "미정" and nValue == "ALL" and heightCheck == True:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND height >= %s"
+                params = (tValue, height)
+            elif pValue == "미정" and nValue == "ALL" and heightCheck == False:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND height <= %s"
+                params = (tValue, height)
+            elif pValue == "미정" and nValue == "ALL" and weightCheck == True:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND weight >= %s"
+                params = (tValue, weight)
+            elif pValue == "미정" and nValue == "ALL" and weightCheck == False:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND weight <= %s"
+                params = (tValue, weight)
+
+            elif pValue == "미정" and heightCheck == True and weightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation IS NULL AND height >= %s AND weight >= %s"
+                    params = (tValue, height, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation = %s AND height >= %s AND weight >= %s"
+                    params = (tValue, nValue, height, weight)
+            elif pValue == "미정" and heightCheck == False and weightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation IS NULL AND height <= %s AND weight <= %s"
+                    params = (tValue, height, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation = %s AND height <= %s AND weight <= %s"
+                    params = (tValue, nValue, height, weight)
+            elif pValue == "미정" and heightCheck == True and weightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation IS NULL AND height >= %s AND weight <= %s"
+                    params = (tValue, height, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation = %s AND height >= %s AND weight <= %s"
+                    params = (tValue, nValue, height, weight)
+            elif pValue == "미정" and heightCheck == False and weightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation IS NULL AND height <= %s AND weight >= %s"
+                    params = (tValue, height, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation = %s AND height <= %s AND weight >= %s"
+                    params = (tValue, nValue, height, weight)
+            elif pValue == "미정" and heightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation IS NULL AND height >= %s"
+                    params = (tValue, height)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation = %s AND height >= %s"
+                    params = (tValue, nValue, height)
+            elif pValue == "미정" and heightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation IS NULL AND height <= %s"
+                    params = (tValue, height)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation = %s AND height <= %s"
+                    params = (tValue, nValue, height)
+            elif pValue == "미정" and weightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation IS NULL AND weight >= %s"
+                    params = (tValue, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation = %s AND weight >= %s"
+                    params = (tValue, nValue, weight)
+            elif pValue == "미정" and weightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation IS NULL AND weight <= %s"
+                    params = (tValue, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation = %s AND weight <= %s"
+                    params = (tValue, nValue, weight)
+
+
+            elif tValue == "ALL" and heightCheck == True and weightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation IS NULL AND height >= %s AND weight >= %s"
+                    params = (pValue, height, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation = %s AND height >= %s AND weight >= %s"
+                    params = (pValue, nValue, height, weight)
+            elif tValue == "ALL" and heightCheck == False and weightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation IS NULL AND height <= %s AND weight <= %s"
+                    params = (pValue, height, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation = %s AND height <= %s AND weight <= %s"
+                    params = (pValue, nValue, height, weight)
+            elif tValue == "ALL" and heightCheck == True and weightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation IS NULL AND height >= %s AND weight <= %s"
+                    params = (pValue, height, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation = %s AND height >= %s AND weight <= %s"
+                    params = (pValue, nValue, height, weight)
+            elif tValue == "ALL" and heightCheck == False and weightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation IS NULL AND height <= %s AND weight >= %s"
+                    params = (pValue, height, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation = %s AND height <= %s AND weight >= %s"
+                    params = (pValue, nValue, height, weight)
+            elif tValue == "ALL" and heightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation IS NULL AND height >= %s"
+                    params = (pValue, height)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation = %s AND height >= %s"
+                    params = (pValue, nValue, height)
+            elif tValue == "ALL" and heightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation IS NULL AND height <= %s"
+                    params = (pValue, height)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation = %s AND height <= %s"
+                    params = (pValue, nValue, height)
+            elif tValue == "ALL" and weightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation IS NULL AND weight >= %s"
+                    params = (pValue, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation = %s AND weight >= %s"
+                    params = (pValue, nValue, weight)
+            elif tValue == "ALL" and weightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation IS NULL AND weight <= %s"
+                    params = (pValue, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation = %s AND weight <= %s"
+                    params = (pValue, nValue, weight)
+
+
+            elif pValue == "ALL" and heightCheck == True and weightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation IS NULL AND height >= %s AND weight >= %s"
+                    params = (tValue, height, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation = %s AND height >= %s AND weight >= %s"
+                    params = (tValue, nValue, height, weight)
+            elif pValue == "ALL" and heightCheck == False and weightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation IS NULL AND height <= %s AND weight <= %s"
+                    params = (tValue, height, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation = %s AND height <= %s AND weight <= %s"
+                    params = (tValue, nValue, height, weight)
+            elif pValue == "ALL" and heightCheck == True and weightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation IS NULL AND height >= %s AND weight <= %s"
+                    params = (tValue, height, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation = %s AND height >= %s AND weight <= %s"
+                    params = (tValue, nValue, height, weight)
+            elif pValue == "ALL" and heightCheck == False and weightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation IS NULL AND height <= %s AND weight >= %s"
+                    params = (tValue, height, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation = %s AND height <= %s AND weight >= %s"
+                    params = (tValue, nValue, height, weight)
+            elif pValue == "ALL" and heightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation IS NULL AND height >= %s"
+                    params = (tValue, height)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation = %s AND height >= %s"
+                    params = (tValue, nValue, height)
+            elif pValue == "ALL" and heightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation IS NULL AND height <= %s"
+                    params = (tValue, height)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation = %s AND height <= %s"
+                    params = (tValue, nValue, height)
+            elif pValue == "ALL" and weightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation IS NULL AND weight >= %s"
+                    params = (tValue, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation = %s AND weight >= %s"
+                    params = (tValue, nValue, weight)
+            elif pValue == "ALL" and weightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation IS NULL AND weight <= %s"
+                    params = (tValue, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation = %s AND weight <= %s"
+                    params = (tValue, nValue, weight)
+
+
+            elif nValue == "ALL" and heightCheck == True and weightCheck == True:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND height >= %s AND weight >= %s"
+                params = (tValue, pValue, height, weight)
+            elif nValue == "ALL" and heightCheck == False and weightCheck == False:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND height <= %s AND weight <= %s"
+                params = (tValue, pValue, height, weight)
+            elif nValue == "ALL" and heightCheck == True and weightCheck == False:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND height >= %s AND weight <= %s"
+                params = (tValue, pValue, height, weight)
+            elif nValue == "ALL" and heightCheck == False and weightCheck == True:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND height <= %s AND weight >= %s"
+                params = (tValue, pValue, height, weight)
+            elif nValue == "ALL" and heightCheck == True:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND height >= %s"
+                params = (tValue, pValue, height)
+            elif nValue == "ALL" and heightCheck == False:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND height <= %s"
+                params = (tValue, pValue, height)
+            elif nValue == "ALL" and weightCheck == True:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND weight >= %s"
+                params = (tValue, pValue, weight)
+            elif nValue == "ALL" and weightCheck == False:
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND weight <= %s"
+                params = (tValue, pValue, weight)
+
+            elif heightCheck == True and weightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation IS NULL AND height >= %s AND weight >= %s"
+                    params = (tValue, pValue, height, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation = %s AND height >= %s AND weight >= %s"
+                    params = (tValue, pValue, nValue, height, weight)
+            elif heightCheck == False and weightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation IS NULL AND height <= %s AND weight <= %s"
+                    params = (tValue, pValue, height, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation = %s AND height <= %s AND weight <= %s"
+                    params = (tValue, pValue, nValue, height, weight)
+            elif heightCheck == True and weightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation IS NULL AND height >= %s AND weight <= %s"
+                    params = (tValue, pValue, height, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation = %s AND height >= %s AND weight <= %s"
+                    params = (tValue, pValue, nValue, height, weight)
+            elif heightCheck == False and weightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation IS NULL AND height <= %s AND weight >= %s"
+                    params = (tValue, pValue, height, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation = %s AND height <= %s AND weight >= %s"
+                    params = (tValue, pValue, nValue, height, weight)
+            elif heightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation IS NULL AND height >= %s"
+                    params = (tValue, pValue, height)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation = %s AND height >= %s"
+                    params = (tValue, pValue, nValue, height)
+            elif heightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation IS NULL AND height <= %s"
+                    params = (tValue, pValue, height)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation = %s AND height <= %s"
+                    params = (tValue, pValue, nValue, height)
+            elif weightCheck == True:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation IS NULL AND weight >= %s"
+                    params = (tValue, pValue, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation = %s AND weight >= %s"
+                    params = (tValue, pValue, nValue, weight)
+            elif weightCheck == False:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation IS NULL AND weight <= %s"
+                    params = (tValue, pValue, weight)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation = %s AND weight <= %s"
+                    params = (tValue, pValue, nValue, weight)
+
         util = DB_Utils()
         tuples = util.queryExecutor(db="kleague", sql=sql, params=params)
         return tuples
@@ -388,15 +815,15 @@ class MainWindow(QWidget):
 
     def heightIsChecked(self):
         if self.radioButtonHeightAbove.isChecked():
-            self.heightCheck = ">="
+            self.heightCheck = True
         else:
-            self.heightCheck = "<="
+            self.heightCheck = False
 
     def weightIsChecked(self):
         if self.radioButtonWeightAbove.isChecked():
-            self.weightCheck = ">="
+            self.weightCheck = True
         else:
-            self.weightCheck = "<="
+            self.weightCheck = False
 
     def pushButton_Clicked(self):
 
