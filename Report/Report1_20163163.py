@@ -13,6 +13,7 @@ class DB_Utils:
                 tuples = cursor.fetchall()
                 return tuples
         except Exception as e:
+            print(sql)
             print(e)
             print(type(e))
         finally:
@@ -68,79 +69,151 @@ class DB_Queries:
     #     tuples = util.queryExecutor(db="kleague", sql=sql, params=params)
     #     return tuples
 
-    def selectPlayer(self, tValue, pValue, nValue):
-        if tValue == "ALL" and pValue == "ALL" and nValue == "ALL":
-            sql = "SELECT * FROM player"
-            params = ()
-
-        elif tValue == "ALL" and nValue == "ALL":
-            sql = "SELECT * FROM player WHERE position = %s"
-            params = (pValue)
-
-        elif pValue == "ALL" and nValue == "ALL":
-            sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s"
-            params = (tValue)
-
-        elif tValue == "ALL" and pValue == "ALL":
-            if nValue == "대한민국":
-                sql = "SELECT * FROM player WHERE nation IS NULL"
+    def selectPlayer(self, tValue, pValue, nValue, height, weight, heightCheck, weightCheck):
+        if height == str(0) and weight == str(0):
+            if tValue == "ALL" and pValue == "ALL" and nValue == "ALL":
+                sql = "SELECT * FROM player"
                 params = ()
-            else:
-                sql = "SELECT * FROM player WHERE nation = %s"
-                params = (nValue)
 
-        elif tValue == "ALL" and pValue == "미정" and nValue == "ALL":
-            sql = "SELECT * FROM player WHERE position IS NULL"
-            params = ()
-
-        elif tValue == "ALL" and pValue == "미정":
-            if nValue == "대한민국":
-                sql = "SELECT * FROM player WHERE position IS NULL AND nation IS NULL"
-                params = ()
-            else:
-                sql = "SELECT * FROM player WHERE position IS NULL AND nation = %s"
-                params = (nValue)
-
-        elif pValue == "미정" and nValue == "ALL":
-            sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL"
-            params = (tValue)
-
-        elif pValue == "미정":
-            if nValue == "대한민국":
-                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation IS NULL"
-                params = (tValue)
-            else:
-                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation = %s"
-                params = (tValue, nValue)
-
-        elif tValue == "ALL":
-            if nValue == "대한민국":
-                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation IS NULL"
+            elif tValue == "ALL" and nValue == "ALL":
+                sql = "SELECT * FROM player WHERE position = %s"
                 params = (pValue)
-            else:
-                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation = %s"
-                params = (pValue, nValue)
 
-        elif pValue == "ALL":
-            if nValue == "대한민국":
-                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation IS NULL"
+            elif pValue == "ALL" and nValue == "ALL":
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s"
                 params = (tValue)
-            else:
-                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation = %s"
-                params = (tValue, nValue)
 
-        elif nValue == "ALL":
-            sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s"
-            params = (tValue, pValue)
+            elif tValue == "ALL" and pValue == "ALL":
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player WHERE nation IS NULL"
+                    params = ()
+                else:
+                    sql = "SELECT * FROM player WHERE nation = %s"
+                    params = (nValue)
 
-        else:
-            if nValue == "대한민국":
-                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation IS NULL"
+            elif tValue == "ALL" and pValue == "미정" and nValue == "ALL":
+                sql = "SELECT * FROM player WHERE position IS NULL"
+                params = ()
+
+            elif tValue == "ALL" and pValue == "미정":
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player WHERE position IS NULL AND nation IS NULL"
+                    params = ()
+                else:
+                    sql = "SELECT * FROM player WHERE position IS NULL AND nation = %s"
+                    params = (nValue)
+
+            elif pValue == "미정" and nValue == "ALL":
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL"
+                params = (tValue)
+
+            elif pValue == "미정":
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation IS NULL"
+                    params = (tValue)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation = %s"
+                    params = (tValue, nValue)
+
+            elif tValue == "ALL":
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation IS NULL"
+                    params = (pValue)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation = %s"
+                    params = (pValue, nValue)
+
+            elif pValue == "ALL":
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation IS NULL"
+                    params = (tValue)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation = %s"
+                    params = (tValue, nValue)
+
+            elif nValue == "ALL":
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s"
                 params = (tValue, pValue)
-            else:
-                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation = %s"
-                params = (tValue, pValue, nValue)
 
+            else:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation IS NULL"
+                    params = (tValue, pValue)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation = %s"
+                    params = (tValue, pValue, nValue)
+        else:
+            if tValue == "ALL" and pValue == "ALL" and nValue == "ALL":
+                sql = "SELECT * FROM player WHERE height %s %s AND weight %s %s"
+                params = (heightCheck, height, weightCheck, weight)
+
+            elif tValue == "ALL" and nValue == "ALL":
+                sql = "SELECT * FROM player WHERE position = %s"
+                params = (pValue)
+
+            elif pValue == "ALL" and nValue == "ALL":
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s"
+                params = (tValue)
+
+            elif tValue == "ALL" and pValue == "ALL":
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player WHERE nation IS NULL"
+                    params = ()
+                else:
+                    sql = "SELECT * FROM player WHERE nation = %s"
+                    params = (nValue)
+
+            elif tValue == "ALL" and pValue == "미정" and nValue == "ALL":
+                sql = "SELECT * FROM player WHERE position IS NULL"
+                params = ()
+
+            elif tValue == "ALL" and pValue == "미정":
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player WHERE position IS NULL AND nation IS NULL"
+                    params = ()
+                else:
+                    sql = "SELECT * FROM player WHERE position IS NULL AND nation = %s"
+                    params = (nValue)
+
+            elif pValue == "미정" and nValue == "ALL":
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL"
+                params = (tValue)
+
+            elif pValue == "미정":
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation IS NULL"
+                    params = (tValue)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position IS NULL AND nation = %s"
+                    params = (tValue, nValue)
+
+            elif tValue == "ALL":
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation IS NULL"
+                    params = (pValue)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND position = %s AND nation = %s"
+                    params = (pValue, nValue)
+
+            elif pValue == "ALL":
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation IS NULL"
+                    params = (tValue)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND nation = %s"
+                    params = (tValue, nValue)
+
+            elif nValue == "ALL":
+                sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s"
+                params = (tValue, pValue)
+
+            else:
+                if nValue == "대한민국":
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation IS NULL"
+                    params = (tValue, pValue)
+                else:
+                    sql = "SELECT * FROM player INNER JOIN team WHERE player.team_id = team.team_id AND team_name = %s AND position = %s AND nation = %s"
+                    params = (tValue, pValue, nValue)
         util = DB_Utils()
         tuples = util.queryExecutor(db="kleague", sql=sql, params=params)
         return tuples
@@ -190,8 +263,14 @@ class MainWindow(QWidget):
         self.radioButtonHeightAbove = QRadioButton("이상")
         self.radioButtonHeightBelow = QRadioButton("이하")
         self.groupBoxHeight = QGroupBox()
+        self.radioButtonHeightAbove.clicked.connect(self.heightIsChecked)
+        self.radioButtonHeightBelow.clicked.connect(self.heightIsChecked)
         self.radioButtonWeightAbove = QRadioButton("이상")
         self.radioButtonWeightBelow = QRadioButton("이하")
+        self.radioButtonWeightAbove.clicked.connect(self.weightIsChecked)
+        self.radioButtonWeightBelow.clicked.connect(self.weightIsChecked)
+
+
         self.groupBoxWeight = QGroupBox()
         self.radioButtonxCsv = QRadioButton("CSV")
         self.radioButtonJson = QRadioButton("JSON")
@@ -295,14 +374,42 @@ class MainWindow(QWidget):
 
         self.nationValue = self.comboBoxNation.currentText()
 
+    def lineEditHeight_Activated(self):
+        if len(self.lineEditHeight.text()) == 0:
+            self.height = str(0)
+        else:
+            self.height = self.lineEditHeight.text()
+
+    def lineEditWeight_Activated(self):
+        if len(self.lineEditWeight.text()) == 0:
+            self.weight = str(0)
+        else:
+            self.weight = self.lineEditWeight.text()
+
+    def heightIsChecked(self):
+        if self.radioButtonHeightAbove.isChecked():
+            self.heightCheck = ">="
+        else:
+            self.heightCheck = "<="
+
+    def weightIsChecked(self):
+        if self.radioButtonWeightAbove.isChecked():
+            self.weightCheck = ">="
+        else:
+            self.weightCheck = "<="
+
     def pushButton_Clicked(self):
 
         self.comboBoxTeam_Activated()
         self.comboBoxPosition_Activated()
         self.comboBoxNation_Activated()
+        self.lineEditHeight_Activated()
+        self.lineEditWeight_Activated()
+
         # DB 검색문 실행
         query = DB_Queries()
-        players = query.selectPlayer(self.teamValue, self.positionValue, self.nationValue)
+        players = query.selectPlayer(self.teamValue, self.positionValue, self.nationValue, self.height, self.weight, self.heightCheck, self.weightCheck)
+
         if players :
             self.tableWidget.clearContents() #테이블을 지움
             self.tableWidget.setRowCount(len(players))
