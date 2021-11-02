@@ -971,7 +971,11 @@ class MainWindow(QWidget):
             rootElement.append(rowElement)
 
             for columnName in list(row.keys()):
-                if row[columnName] == None:  # NICKNAME, JOIN_YYYY, NATION 처리
+                if columnName == 'POSITION' and row[columnName] == None:
+                    rowElement.attrib[columnName] = '미정'
+                elif columnName == 'NATION' and row[columnName] == None:
+                    rowElement.attrib[columnName] = '대한민국'
+                elif row[columnName] == None:  # NICKNAME, JOIN_YYYY 처리
                     rowElement.attrib[columnName] = ''
                 else:
                     rowElement.attrib[columnName] = row[columnName]
