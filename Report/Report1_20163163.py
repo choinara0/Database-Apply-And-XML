@@ -874,7 +874,11 @@ class MainWindow(QWidget):
         return
 
     def resetButton_Clicked(self):
-
+        self.comboBoxTeam.setCurrentIndex(15)
+        self.comboBoxPosition.setCurrentIndex(5)
+        self.comboBoxNation.setCurrentIndex(13)
+        self.lineEditHeight.setText("")
+        self.lineEditWeight.setText("")
         return
 
 #########################################
