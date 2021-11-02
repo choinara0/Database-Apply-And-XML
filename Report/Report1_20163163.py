@@ -70,7 +70,7 @@ class DB_Queries:
     #     return tuples
 
     def selectPlayer(self, tValue, pValue, nValue, height, weight, heightCheck, weightCheck):
-        if height == str(0) and weight == str(0):
+        if height == str(-1) and weight == str(-1):
             if tValue == "ALL" and pValue == "ALL" and nValue == "ALL":
                 sql = "SELECT * FROM player"
                 params = ()
@@ -694,8 +694,6 @@ class MainWindow(QWidget):
         self.radioButtonHeightBelow.clicked.connect(self.heightIsChecked)
         self.radioButtonWeightAbove = QRadioButton("이상")
         self.radioButtonWeightBelow = QRadioButton("이하")
-        self.radioButtonWeightAbove.clicked.connect(self.weightIsChecked)
-        self.radioButtonWeightBelow.clicked.connect(self.weightIsChecked)
 
 
         self.groupBoxWeight = QGroupBox()
@@ -804,76 +802,97 @@ class MainWindow(QWidget):
         self.nationValue = self.comboBoxNation.currentText()
 
     def lineEditHeight_Activated(self):
-        if len(self.lineEditHeight.text()) == 0:
-            self.height = str(0)
+        text = self.lineEditHeight.text()
+        if len(text) == 0 and self.heightCheck == True:
+            self.height = str(-1)
+        elif len(text) == 0 and self.heightCheck == False:
+            self.height = str(float('inf'))
+        elif len(text) == 0 and self.heightCheck == None:
+            self.height = str(-1)
         else:
-            self.height = self.lineEditHeight.text()
+            self.height = text
 
     def lineEditWeight_Activated(self):
-        if len(self.lineEditWeight.text()) == 0:
-            self.weight = str(0)
+        text = self.lineEditWeight.text()
+        if len(text) == 0 and self.weightCheck == True:
+            self.weight = str(-1)
+        elif len(text) == 0 and self.weightCheck == False:
+            self.weight = str(float('inf'))
+        elif len(text) == 0 and self.weightCheck == None:
+            self.weight = str(-1)
         else:
             self.weight = self.lineEditWeight.text()
 
     def heightIsChecked(self):
         if self.radioButtonHeightAbove.isChecked():
             self.heightCheck = True
-        else:
+        elif self.radioButtonHeightBelow.isChecked():
             self.heightCheck = False
+        else:
+            self.heightCheck = None
 
     def weightIsChecked(self):
         if self.radioButtonWeightAbove.isChecked():
             self.weightCheck = True
-        else:
+        elif self.radioButtonWeightBelow.isChecked():
             self.weightCheck = False
+        else:
+            self.weightCheck = None
 
     def pushButton_Clicked(self):
 
         self.comboBoxTeam_Activated()
         self.comboBoxPosition_Activated()
         self.comboBoxNation_Activated()
+        self.heightIsChecked()
+        self.weightIsChecked()
         self.lineEditHeight_Activated()
         self.lineEditWeight_Activated()
 
-        if type(self.height) != int or type(self.weight) != int:
+
+        try:
+            # DB 검색문 실행
+            print(self.teamValue, self.positionValue, self.nationValue, self.height, self.weight, self.heightCheck,
+                  self.weightCheck)
+            query = DB_Queries()
+            players = query.selectPlayer(self.teamValue, self.positionValue, self.nationValue, self.height, self.weight,
+                                         self.heightCheck, self.weightCheck)
+
+            if players:
+                self.tableWidget.clearContents()  # 테이블을 지움
+                self.tableWidget.setRowCount(len(players))
+                self.tableWidget.setColumnCount(len(players[0]))
+                columnNames = list(players[0].keys())
+                self.tableWidget.setHorizontalHeaderLabels(columnNames)
+                self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+
+                for player in players:  # player는 딕셔너리임.
+                    rowIDX = players.index(player)  # 테이블 위젯의 row index 할당
+
+                    for k, v in player.items():
+                        columnIDX = list(player.keys()).index(k)  # 테이블 위젯의 column index 할당
+
+                        if k == "NATION" and v == None:
+                            item = QTableWidgetItem("대한민국")
+                        elif k == "POSITION" and v == None:
+                            item = QTableWidgetItem("미정")
+                        elif v == None:
+                            continue
+                        elif isinstance(v, datetime.date):  # QTableWidgetItem 객체 생성
+                            item = QTableWidgetItem(v.strftime('%Y-%m-%d'))
+                        else:
+                            item = QTableWidgetItem(str(v))
+
+                        self.tableWidget.setItem(rowIDX, columnIDX, item)
+
+                self.tableWidget.resizeColumnsToContents()
+                self.tableWidget.resizeRowsToContents()
+
+        except Exception as e:
             QMessageBox.about(self, "메시지 박스", "정수를 입력해주세요 ")
             self.lineEditHeight.setText("")
             self.lineEditWeight.setText("")
             return
-
-        # DB 검색문 실행
-        query = DB_Queries()
-        players = query.selectPlayer(self.teamValue, self.positionValue, self.nationValue, self.height, self.weight, self.heightCheck, self.weightCheck)
-
-        if players :
-            self.tableWidget.clearContents() #테이블을 지움
-            self.tableWidget.setRowCount(len(players))
-            self.tableWidget.setColumnCount(len(players[0]))
-            columnNames = list(players[0].keys())
-            self.tableWidget.setHorizontalHeaderLabels(columnNames)
-            self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
-
-            for player in players:                              # player는 딕셔너리임.
-                rowIDX = players.index(player)                  # 테이블 위젯의 row index 할당
-
-                for k, v in player.items():
-                    columnIDX = list(player.keys()).index(k)    # 테이블 위젯의 column index 할당
-
-                    if k == "NATION" and v == None:
-                        item = QTableWidgetItem("대한민국")
-                    elif k == "POSITION" and v == None:
-                        item = QTableWidgetItem("미정")
-                    elif v == None:
-                        continue
-                    elif isinstance(v, datetime.date):          # QTableWidgetItem 객체 생성
-                        item = QTableWidgetItem(v.strftime('%Y-%m-%d'))
-                    else:
-                        item = QTableWidgetItem(str(v))
-
-                    self.tableWidget.setItem(rowIDX, columnIDX, item)
-
-            self.tableWidget.resizeColumnsToContents()
-            self.tableWidget.resizeRowsToContents()
 
     def saveButton_Clicked(self):
 
