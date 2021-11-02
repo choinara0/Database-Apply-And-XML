@@ -898,10 +898,12 @@ class MainWindow(QWidget):
             self.lineEditWeight.setText("")
             return
 
+        return players
+
     def saveButton_Clicked(self):
         if self.radioButtonxCsv.isChecked():
             self.readDB_writeCSV()
-        elif self.radioButtonXml.isChecked():
+        elif self.radioButtonJson.isChecked():
             self.readDB_writeJSON()
         else:
             self.readDB_writeXML()
@@ -916,84 +918,48 @@ class MainWindow(QWidget):
         return
 
     def readDB_writeCSV(self):
-
-        # DB 검색문 실행
-        query = DB_Queries()
-        players = query.selectPlayerUsingPosition("GK")  # 딕셔너리의 리스트
-        # {'PLAYER_ID': '2007001', 'PLAYER_NAME': '정병지', 'TEAM_ID': 'K03', 'E_PLAYER_NAME': 'JEONG, BYUNGJI', 'NICKNAME': None, 'JOIN_YYYY': '2011', 'POSITION': 'GK', 'BACK_NO': 1, 'NATION': None, 'BIRTH_DATE': datetime.date(1980, 8, 4), 'SOLAR': '1', 'HEIGHT': 184, 'WEIGHT': 77}
-        print(players)
-        print()
-
+        self.players = self.pushButton_Clicked()
         # CSV 화일을 쓰기 모드로 생성
         with open('playerGK.csv', 'w', encoding='utf-8', newline='') as f:
             wr = csv.writer(f)
 
-            # 테이블 헤더를 출력
-            columnNames = list(players[0].keys())
-            # ['PLAYER_ID', 'PLAYER_NAME', 'TEAM_ID', 'E_PLAYER_NAME', 'NICKNAME', 'JOIN_YYYY', 'POSITION', 'BACK_NO', 'NATION', 'BIRTH_DATE', 'SOLAR', 'HEIGHT', 'WEIGHT']
+            columnNames = list(self.players[0].keys())
             print(columnNames)
             print()
 
             wr.writerow(columnNames)
-            # PLAYER_ID,PLAYER_NAME,TEAM_ID,E_PLAYER_NAME,NICKNAME,JOIN_YYYY,POSITION,BACK_NO,NATION,BIRTH_DATE,SOLAR,HEIGHT,WEIGHT
 
-            # 테이블 내용을 출력
-            for player in players:
+            for player in self.players:
                 row = list(player.values())
                 print(row)
-                # ['2007001', '정병지', 'K03', 'JEONG, BYUNGJI', '', '2011', 'GK', 1, '', datetime.date(1980, 8, 4), '1', 184, 77]
-
                 wr.writerow(row)
-                # 2007001,정병지,K03,"JEONG, BYUNGJI",,2011,GK,1,,1980-08-04,1,184,77
-                # 날짜 변환 기능을 csv 패키지에서 제공함.
 
     def readDB_writeJSON(self):
-
-        # DB 검색문 실행
-        query = DB_Queries()
-        players = query.selectPlayerUsingPosition("GK")  # 딕셔너리의 리스트
-        # {'PLAYER_ID': '2007001', 'PLAYER_NAME': '정병지', 'TEAM_ID': 'K03', 'E_PLAYER_NAME': 'JEONG, BYUNGJI', 'NICKNAME': None, 'JOIN_YYYY': '2011', 'POSITION': 'GK', 'BACK_NO': 1, 'NATION': None, 'BIRTH_DATE': datetime.date(1980, 8, 4), 'SOLAR': '1', 'HEIGHT': 184, 'WEIGHT': 77}
-        print(players)
-        print()
-
-        # 애트리뷰트 BIRTH_DATE의 값을 MySQL datetime 타입에서 스트링으로 변환함. (CSV에서는 패키지가 변환함.)
-        for player in players:
+        self.players = self.pushButton_Clicked()
+        for player in self.players:
             for k, v in player.items():
                 if isinstance(v, datetime.date):
-                    player[k] = v.strftime('%Y-%m-%d')  # 키가 k인 item의 값 v를 수정
+                    player[k] = v.strftime('%Y-%m-%d')
                     print(player[k])
-        print()
 
-        newDict = dict(playerGK=players)  # playerGK(파일명)을 Key값으로, 파일내용 전체를 Value로
-        print(newDict)
-
+        newDict = dict(selectPlayer=self.players)  # playerGK(파일명)을 Key값으로, 파일내용 전체를 Value로
         # JSON 화일에 쓰기
         # dump()에 의해 모든 작은 따옴표('')는 큰 따옴표("")로 변환됨
-        with open('playerGK.json', 'w', encoding='utf-8') as f:
+        with open('selectPlayer.json', 'w', encoding='utf-8') as f:
             json.dump(newDict, f, ensure_ascii=False)
 
-        with open('playerGK_indent.json', 'w', encoding='utf-8') as f:
+        with open('selectPlayer.json', 'w', encoding='utf-8') as f:
             json.dump(newDict, f, indent=4, ensure_ascii=False)
 
     def readDB_writeXML(self):
-
-        # DB 검색문 실행
-        query = DB_Queries()
-        players = query.selectPlayerUsingPosition("GK")  # 딕셔너리의 리스트
-        # {'PLAYER_ID': '2007001', 'PLAYER_NAME': '정병지', 'TEAM_ID': 'K03', 'E_PLAYER_NAME': 'JEONG, BYUNGJI', 'NICKNAME': None, 'JOIN_YYYY': '2011', 'POSITION': 'GK', 'BACK_NO': 1, 'NATION': None, 'BIRTH_DATE': datetime.date(1980, 8, 4), 'SOLAR': '1', 'HEIGHT': 184, 'WEIGHT': 77}
-        print(players)
-        print()
-
-        # 애트리뷰트 BIRTH_DATE의 값을 MySQL datetime 타입에서 스트링으로 변환함. (CSV에서는 패키지가 변환함.)
-        for player in players:
+        self.players = self.pushButton_Clicked()
+        for player in self.players:
             for k, v in player.items():
                 if isinstance(v, datetime.date):
                     player[k] = v.strftime('%Y-%m-%d')  # 키가 k인 item의 값 v를 수정
 
-        newDict = dict(playerGK=players)
-        print(newDict)
+        newDict = dict(selectPlayer=self.players)
 
-        # XDM 트리 생성
         tableName = list(newDict.keys())[0]
         tableRows = list(newDict.values())[0]
 
@@ -1013,8 +979,8 @@ class MainWindow(QWidget):
                 if type(row[columnName]) == int:  # BACK_NO, HEIGHT, WEIGHT 처리
                     rowElement.attrib[columnName] = str(row[columnName])
 
-        # XDM 트리를 화일에 출력
-        ET.ElementTree(rootElement).write('playerGK.xml', encoding='utf-8', xml_declaration=True)
+        ET.ElementTree(rootElement).write('selectPlayer.xml', encoding='utf-8', xml_declaration=True)
+
 #########################################
 
 def main():
