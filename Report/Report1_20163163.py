@@ -731,7 +731,9 @@ class MainWindow(QWidget):
 
         # 푸쉬버튼 설정
         self.resetButton = QPushButton("초기화", self)
+        self.resetButton.clicked.connect(self.resetButton_Clicked)
         self.saveButton = QPushButton("저장", self)
+        self.saveButton.clicked.connect(self.saveButton_Clicked)
         self.pushButton = QPushButton("검색", self)
         self.pushButton.clicked.connect(self.pushButton_Clicked)
 
@@ -866,6 +868,14 @@ class MainWindow(QWidget):
 
             self.tableWidget.resizeColumnsToContents()
             self.tableWidget.resizeRowsToContents()
+
+    def saveButton_Clicked(self):
+
+        return
+
+    def resetButton_Clicked(self):
+
+        return
 
 #########################################
 
