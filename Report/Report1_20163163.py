@@ -920,18 +920,19 @@ class MainWindow(QWidget):
     def readDB_writeCSV(self):
         self.players = self.pushButton_Clicked()
         # CSV 화일을 쓰기 모드로 생성
-        with open('playerGK.csv', 'w', encoding='utf-8', newline='') as f:
+        with open('selectPlayer.csv', 'w', encoding='utf-8', newline='') as f:
             wr = csv.writer(f)
 
             columnNames = list(self.players[0].keys())
-            print(columnNames)
-            print()
-
             wr.writerow(columnNames)
 
             for player in self.players:
+                for k, v in player.items():
+                    if k == 'POSITION' and v == None:
+                        player[k] = '미정'
+                    elif k == 'NATION' and v == None:
+                        player[k] = '대한민국'
                 row = list(player.values())
-                print(row)
                 wr.writerow(row)
 
     def readDB_writeJSON(self):
