@@ -835,6 +835,12 @@ class MainWindow(QWidget):
         self.lineEditHeight_Activated()
         self.lineEditWeight_Activated()
 
+        if type(self.height) != int or type(self.weight) != int:
+            QMessageBox.about(self, "메시지 박스", "정수를 입력해주세요 ")
+            self.lineEditHeight.setText("")
+            self.lineEditWeight.setText("")
+            return
+
         # DB 검색문 실행
         query = DB_Queries()
         players = query.selectPlayer(self.teamValue, self.positionValue, self.nationValue, self.height, self.weight, self.heightCheck, self.weightCheck)
