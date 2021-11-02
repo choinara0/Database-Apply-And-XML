@@ -938,7 +938,11 @@ class MainWindow(QWidget):
         self.players = self.pushButton_Clicked()
         for player in self.players:
             for k, v in player.items():
-                if isinstance(v, datetime.date):
+                if k == 'POSITION' and v == None:
+                    player[k] = '미정'
+                elif k== 'NATION' and v == None:
+                    player[k] = '대한민국'
+                elif isinstance(v, datetime.date):
                     player[k] = v.strftime('%Y-%m-%d')
                     print(player[k])
 
