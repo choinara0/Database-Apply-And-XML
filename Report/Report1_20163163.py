@@ -705,7 +705,7 @@ class MainWindow(QWidget):
         self.radioButtonXml = QRadioButton("XML")
         self.groupBoxFile = QGroupBox()
 
-        # comboBox seting
+        # 콤보박스 세팅
         query = DB_Queries()
         teamRows = query.selectTeam()
         postionRows = query.selectPlayerPosition()
@@ -752,43 +752,48 @@ class MainWindow(QWidget):
         self.weightLayout.addWidget(self.radioButtonWeightAbove)
         self.weightLayout.addWidget(self.radioButtonWeightBelow)
 
-        toplayout = QGridLayout()
-        toplayout.addWidget(self.labelTitle, 0, 0)
-        toplayout.addWidget(self.labelTeam, 1, 0)
-        toplayout.addWidget(self.comboBoxTeam, 1, 1)
-        toplayout.addWidget(self.labelPosition, 1, 5)
-        toplayout.addWidget(self.comboBoxPosition, 1, 6)
-        toplayout.addWidget(self.labelNation, 1, 9)
-        toplayout.addWidget(self.comboBoxNation, 1, 10)
-        toplayout.addWidget(self.resetButton, 1, 11)
-        toplayout.addWidget(self.labelHeight, 2, 0)
-        toplayout.addWidget(self.lineEditHeight, 2, 1)
-        toplayout.addWidget(self.groupBoxHeight)
-        toplayout.addWidget(self.labelWeight, 2, 5)
-        toplayout.addWidget(self.lineEditWeight, 2, 6)
-        toplayout.addWidget(self.groupBoxWeight)
-        toplayout.addWidget(self.pushButton, 2, 11)
+        topLayout1 = QHBoxLayout()
+        topLayout1.addWidget(self.labelTeam)
+        topLayout1.addWidget(self.comboBoxTeam)
+        topLayout1.addWidget(self.labelPosition)
+        topLayout1.addWidget(self.comboBoxPosition)
+        topLayout1.addWidget(self.labelNation)
+        topLayout1.addWidget(self.comboBoxNation)
+        topLayout1.addWidget(self.resetButton)
 
-        bottomInnerLayout = QBoxLayout(QBoxLayout.LeftToRight)
-        bottomInnerLayout.addWidget(self.radioButtonxCsv)
-        bottomInnerLayout.addWidget(self.radioButtonJson)
-        bottomInnerLayout.addWidget(self.radioButtonXml)
-        self.groupBoxFile.setLayout(bottomInnerLayout)
+        topLayout2 = QHBoxLayout()
+        topLayout2.addWidget(self.labelHeight)
+        topLayout2.addWidget(self.lineEditHeight)
+        topLayout2.addWidget(self.groupBoxHeight)
+        topLayout2.addWidget(self.labelWeight)
+        topLayout2.addWidget(self.lineEditWeight)
+        topLayout2.addWidget(self.groupBoxWeight)
+        topLayout2.addWidget(self.pushButton)
 
-        bottomLayout = QGridLayout()
-        bottomLayout.addWidget(self.labelFile, 0, 0)
-        bottomLayout.addWidget(self.groupBoxFile, 1, 0)
-        bottomLayout.addWidget(self.saveButton, 1, 11)
+        toplayout = QVBoxLayout()
+        toplayout.addWidget(self.labelTitle)
+        toplayout.addLayout(topLayout1)
+        toplayout.addLayout(topLayout2)
 
+        fileLayout = QBoxLayout(QBoxLayout.LeftToRight)
+        fileLayout.addWidget(self.radioButtonxCsv)
+        fileLayout.addWidget(self.radioButtonJson)
+        fileLayout.addWidget(self.radioButtonXml)
+        self.groupBoxFile.setLayout(fileLayout)
 
+        bottomInnerLayout = QHBoxLayout()
+        bottomInnerLayout.addWidget(self.groupBoxFile)
+        bottomInnerLayout.addWidget(self.saveButton)
 
+        bottomLayout = QVBoxLayout()
+        bottomLayout.addWidget(self.labelFile)
+        bottomLayout.addLayout(bottomInnerLayout)
 
         layout = QVBoxLayout()
         layout.addLayout(toplayout)
         layout.addLayout(middleLayout)
         layout.addLayout(bottomLayout)
         self.setLayout(layout)
-
 
     def comboBoxTeam_Activated(self):
 
