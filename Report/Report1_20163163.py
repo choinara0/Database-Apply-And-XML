@@ -699,14 +699,13 @@ class MainWindow(QWidget):
         self.radioButtonWeightAbove = QRadioButton("이상")
         self.radioButtonWeightBelow = QRadioButton("이하")
 
-
         self.groupBoxWeight = QGroupBox()
         self.radioButtonxCsv = QRadioButton("CSV")
         self.radioButtonJson = QRadioButton("JSON")
         self.radioButtonXml = QRadioButton("XML")
         self.groupBoxFile = QGroupBox()
 
-        # DB 검색문 실행
+        # comboBox seting
         query = DB_Queries()
         teamRows = query.selectTeam()
         postionRows = query.selectPlayerPosition()
@@ -730,7 +729,6 @@ class MainWindow(QWidget):
         self.comboBoxNation.addItems(nationItems)
         self.comboBoxNation.setCurrentIndex(13)
 
-
         # 푸쉬버튼 설정
         self.resetButton = QPushButton("초기화", self)
         self.resetButton.clicked.connect(self.resetButton_Clicked)
@@ -738,7 +736,6 @@ class MainWindow(QWidget):
         self.saveButton.clicked.connect(self.saveButton_Clicked)
         self.pushButton = QPushButton("검색", self)
         self.pushButton.clicked.connect(self.pushButton_Clicked)
-
 
         # 테이블위젯 설정
         self.tableWidget = QTableWidget(self)   # QTableWidget 객체 생성
@@ -856,8 +853,6 @@ class MainWindow(QWidget):
 
         try:
             # DB 검색문 실행
-            print(self.teamValue, self.positionValue, self.nationValue, self.height, self.weight, self.heightCheck,
-                  self.weightCheck)
             query = DB_Queries()
             players = query.selectPlayer(self.teamValue, self.positionValue, self.nationValue, self.height, self.weight,
                                          self.heightCheck, self.weightCheck)
@@ -891,6 +886,8 @@ class MainWindow(QWidget):
 
                 self.tableWidget.resizeColumnsToContents()
                 self.tableWidget.resizeRowsToContents()
+            else:
+                self.tableWidget.clearContents()  # 테이블을 지움
 
         except Exception as e:
             QMessageBox.about(self, "메시지 박스", "정수를 입력해주세요 ")
