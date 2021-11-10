@@ -9,7 +9,7 @@ import xml.etree.ElementTree as ET
 class DB_Utils:
 
     def queryExecutor(self, db, sql, params):
-        conn = pymysql.connect(host='localhost', user='guest', password='bemyguest', db=db, charset='utf8')
+        conn = pymysql.connect(host='localhost', user='guest', password='bemyguest', db='kleague', charset='utf8')
 
         try:
             with conn.cursor(pymysql.cursors.DictCursor) as cursor:     # dictionary based cursor
@@ -18,19 +18,6 @@ class DB_Utils:
                 return tuples
         except Exception as e:
             print(sql)
-            print(e)
-            print(type(e))
-        finally:
-            conn.close()
-
-    def updateExecutor(self, db, sql, params):
-        conn = pymysql.connect(host='localhost', user='guest', password='bemyguest', db=db, charset='utf8')
-
-        try:
-            with conn.cursor() as cursor:
-                cursor.execute(sql, params)
-            conn.commit()
-        except Exception as e:
             print(e)
             print(type(e))
         finally:
@@ -649,16 +636,6 @@ class DB_Queries:
         tuples = util.queryExecutor(db="kleague", sql=sql, params=params)
         return tuples
 
-class DB_Updates:
-    # 모든 갱신문은 여기에 각각 하나의 메소드로 정의
-
-    def insertPlayer(self, player_id, player_name, team_id, position):
-        sql = "INSERT INTO player (player_id, player_name, team_id, position) VALUES (%s, %s, %s, %s)"
-        params = (player_id, player_name, team_id, position)
-
-        util = DB_Utils()
-        util.updateExecutor(db="kleague", sql=sql, params=params)
-
 #########################################
 
 class MainWindow(QWidget):
@@ -855,13 +832,15 @@ class MainWindow(QWidget):
         self.lineEditHeight_Activated()
         self.lineEditWeight_Activated()
 
-
         try:
+            if len(self.height) > 0:
+                temp1 = int(self.height)
+            if len(self.weight) > 0:
+                temp2 = int(self.weight)
             # DB 검색문 실행
             query = DB_Queries()
             players = query.selectPlayer(self.teamValue, self.positionValue, self.nationValue, self.height, self.weight,
                                          self.heightCheck, self.weightCheck)
-
             if players:
                 self.tableWidget.clearContents()  # 테이블을 지움
                 self.tableWidget.setRowCount(len(players))
@@ -896,8 +875,7 @@ class MainWindow(QWidget):
 
         except Exception as e:
             QMessageBox.about(self, "메시지 박스", "정수를 입력해주세요 ")
-            self.lineEditHeight.setText("")
-            self.lineEditWeight.setText("")
+            self.resetButton_Clicked()
             return
 
         return players
@@ -917,6 +895,11 @@ class MainWindow(QWidget):
         self.comboBoxNation.setCurrentIndex(13)
         self.lineEditHeight.setText("")
         self.lineEditWeight.setText("")
+        self.radioButtonHeightAbove.setChecked(False)
+        self.radioButtonHeightBelow.setChecked(False)
+        self.radioButtonWeightAbove.setChecked(False)
+        self.radioButtonWeightBelow.setChecked(False)
+        self.tableWidget.clearContents()
         return
 
     def readDB_writeCSV(self):
@@ -947,7 +930,7 @@ class MainWindow(QWidget):
                     player[k] = '대한민국'
                 elif isinstance(v, datetime.date):
                     player[k] = v.strftime('%Y-%m-%d')
-                    print(player[k])
+
 
         newDict = dict(selectPlayer=self.players)  # playerGK(파일명)을 Key값으로, 파일내용 전체를 Value로
         # JSON 화일에 쓰기
