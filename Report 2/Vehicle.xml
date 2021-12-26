@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Vehicles xmlns="http://www.example.com/vehicles" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://www.example.com/vehicles vehicle.xsd">
+    
+    <Vehicle xsi:type="AutomobileType">
+        <Body>Palisade</Body>
+        <DriveTrain>
+            <Engine>Cylinder Disel</Engine>
+            <Transmission>Automatic Transmisson</Transmission>
+        </DriveTrain>
+        <Trunk>button</Trunk>
+    </Vehicle>
+    
+    <Vehicle xsi:type="SedanType">
+        <Body>Sonata</Body>
+        <DriveTrain>
+            <Engine>GDi Hybrid</Engine>
+            <Transmission>IVT</Transmission>
+        </DriveTrain>
+        <Trunk>button</Trunk>
+    </Vehicle>
+    
+    <Vehicle xsi:type="ConvertibleType">
+        <Body>Lamborghini</Body>
+        <DriveTrain>
+            <Engine>V10</Engine>
+            <Transmission>DCT</Transmission>
+        </DriveTrain>
+        <Trunk>front</Trunk>
+        <OperatingRoof></OperatingRoof>
+    </Vehicle>
+    
+    <Vehicle xsi:type="TruckType">
+        <Body>Mighty</Body>
+        <DriveTrain>
+            <Engine>F-Engine</Engine>
+            <Transmission>Allison 6-speed automatic</Transmission>
+        </DriveTrain>
+        <Compartment></Compartment>
+    </Vehicle>
+    
+</Vehicles>
